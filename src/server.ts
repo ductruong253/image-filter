@@ -36,7 +36,7 @@ import {filterImageFromURL, deleteLocalFiles, isUrlValid} from './util/util';
       console.log("Trying to process image as input URL...")
       const imagePath:string = await filterImageFromURL(url);
       console.log("SUCCESS! Returning image...")
-      return res.sendFile(imagePath, () => {deleteLocalFiles([imagePath])})
+      return res.status(200).sendFile(imagePath, () => {deleteLocalFiles([imagePath])})
     }
     catch {
       return res.status(500).send("Error occured during operation")
