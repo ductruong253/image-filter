@@ -1,6 +1,6 @@
-import express from 'express';
+import express, {Request, Response} from 'express';
 import bodyParser from 'body-parser';
-import {filterImageFromURL, deleteLocalFiles} from './util/util';
+import {filterImageFromURL, deleteLocalFiles, isUrlValid} from './util/util';
 
 (async () => {
 
@@ -29,6 +29,20 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
   /**************************************************************************** */
 
+  app.get("/filteredimage", async (req : Request, res : Response) => {
+    const url = req.query.image_url as string ;
+    if (!isUrlValid(url)) return res.status(400).send("Bad request");
+    try{
+      console.log("Trying to process image as input URL...")
+      const imagePath:string = await filterImageFromURL(url);
+      console.log("SUCCESS! Returning image...")
+      return res.sendFile(imagePath, () => {deleteLocalFiles([imagePath])})
+    }
+    catch {
+      return res.status(500).send("Error occured during operation")
+    }
+    
+  })
   //! END @TODO1
   
   // Root Endpoint
